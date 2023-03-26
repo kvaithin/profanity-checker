@@ -87,11 +87,11 @@ dependencies {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.jvmTarget = '1.17'
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.jvmTarget = '1.17'
 }
 
 test {
