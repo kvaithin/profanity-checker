@@ -1,0 +1,126 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'jacoco'
+}
+
+group = 'com.kvaithin'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/" }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+
+        mavenJava(MavenPublication) {
+
+            groupId = 'com.kvaithin'
+            artifactId = 'profanity-checker'
+            version = '1.0.0'
+            from components.java
+
+            pom {
+                name = 'Profanity Checker'
+                description = 'Profanity Checker Utility'
+                url = 'https://github.com/kvaithin/profanity-checker'
+                inceptionYear = '2023'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'kvaithin'
+                        name = 'karthik vaithin'
+                        email = 'k@kvaithin.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git@github.com:kvaithin/profanity-checker.git'
+                    developerConnection = 'scm:git:git@github.com:kvaithin/profanity-checker.git'
+                    url = 'https://github.com/kvaithin/profanity-checker'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = project.properties["username"]
+                password = project.properties["password"]
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = file("$buildDir/jacoco")
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.90
+            }
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.90
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
