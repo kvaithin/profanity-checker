@@ -42,3 +42,9 @@ fun main() {
     println(textHasProfanity, 'en') // false
 }
 ```
+
+#### Acknowledgements
+
+English profanity list obtained from 
+
+`https://github.com/surge-ai/profanity/blob/main/profanity_en.csv`
